@@ -367,23 +367,6 @@ wss.on('connection', (ws, req) => {
 
 
 // ****** nezha ******
-const getDownloadUrl = () => {
-  const arch = os.arch();
-  if (arch === 'arm' || arch === 'arm64' || arch === 'aarch64') {
-    if (!NEZHA_PORT) {
-      return 'https://arm64.ssss.nyc.mn/v1';
-    } else {
-      return 'https://arm64.ssss.nyc.mn/agent';
-    }
-  } else {
-    if (!NEZHA_PORT) {
-      return 'https://amd64.ssss.nyc.mn/v1';
-    } else {
-      return 'https://amd64.ssss.nyc.mn/agent';
-    }
-  }
-};
-
 // 下载nezha
 const downloadFile = async () => {
   if (!NEZHA_SERVER && !NEZHA_KEY) return;
@@ -414,6 +397,23 @@ const downloadFile = async () => {
   }
 };
 
+const getDownloadUrl = () => {
+  const arch = os.arch();
+  if (arch === 'arm' || arch === 'arm64' || arch === 'aarch64') {
+    if (!NEZHA_PORT) {
+      return 'https://arm64.ssss.nyc.mn/v1';
+    } else {
+      return 'https://arm64.ssss.nyc.mn/agent';
+    }
+  } else {
+    if (!NEZHA_PORT) {
+      return 'https://amd64.ssss.nyc.mn/v1';
+    } else {
+      return 'https://amd64.ssss.nyc.mn/agent';
+    }
+  }
+};
+
 // 运行nezha
 const runnz = async () => {
   try {
@@ -428,7 +428,7 @@ const runnz = async () => {
 
   await downloadFile(); // 下载nezha
   let command = '';
-  let tlsPorts = ['443', '8443', '2096', '2087', '2083', '2053'];
+  let tlsPorts = ['443', '8443', '2053', '2083', '2087', '2096'];
   if (NEZHA_SERVER && NEZHA_PORT && NEZHA_KEY) {
     const NEZHA_TLS = tlsPorts.includes(NEZHA_PORT) ? '--tls' : '';
     command = `setsid nohup ./npm -s ${NEZHA_SERVER}:${NEZHA_PORT} -p ${NEZHA_KEY} ${NEZHA_TLS} --disable-auto-update --report-delay 4 --skip-conn --skip-procs >/dev/null 2>&1 &`;
